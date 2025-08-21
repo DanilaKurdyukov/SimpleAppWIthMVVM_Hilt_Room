@@ -1,6 +1,5 @@
-package com.example.room_hilt_mvvm.ui.theme
+package com.example.room_hilt_mvvm.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
