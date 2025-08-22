@@ -5,6 +5,7 @@ import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.room_hilt_mvvm.data.model.StudentEntity
-import com.example.room_hilt_mvvm.presentation.ui.card.ImmutableStudent
 import com.example.room_hilt_mvvm.presentation.ui.vm.HomeViewModel
 
 @Composable
@@ -163,7 +167,70 @@ fun BottomContent(
     }
 }
 
+@Immutable
+data class ImmutableStudent(val studentEntity: StudentEntity)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentCard(wrapper: ImmutableStudent, homeViewModel: HomeViewModel, mod: Modifier) {
-    TODO("Not yet implemented")
+fun StudentCard(
+    wrapper: ImmutableStudent,
+    homeViewModel: HomeViewModel,
+    mod: Modifier,
+) {
+
+
+    val onCheckedChange: (value: StudentEntity) -> Unit = remember {
+        return@remember homeViewModel::updateStudent
+    }
+    Card(
+        onClick = {
+
+        }, modifier = mod
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+
+        )
+        {
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .weight(3f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
+            ) {
+
+
+                Text(
+                    text = wrapper.studentEntity.name,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = wrapper.studentEntity.studentRollNo,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+
+                Checkbox(checked = wrapper.studentEntity.passOrFail, onCheckedChange = {
+                    onCheckedChange(
+                        StudentEntity(
+                            wrapper.studentEntity.id,
+                            wrapper.studentEntity.name,
+                            wrapper.studentEntity.studentRollNo,
+                            it
+                        )
+                    )
+                })
+            }
+
+
+        }
+    }
 }
